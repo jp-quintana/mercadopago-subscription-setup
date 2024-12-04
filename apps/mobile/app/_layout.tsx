@@ -1,34 +1,21 @@
 import '@/global.css';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Theme, ThemeProvider } from '@react-navigation/native';
+import { DefaultTheme, Theme, ThemeProvider } from '@react-navigation/native';
 import { Slot, SplashScreen } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as React from 'react';
 import { Platform } from 'react-native';
-import * as Font from 'expo-font';
 import { NAV_THEME } from '@/lib';
 import { useColorScheme } from '@/hooks';
 
 const LIGHT_THEME: Theme = {
-  dark: false,
+  ...DefaultTheme,
   colors: NAV_THEME.light,
-  fonts: {
-    regular: { fontFamily: 'system-ui', fontWeight: 'normal' },
-    medium: { fontFamily: 'system-ui', fontWeight: '500' },
-    bold: { fontFamily: 'system-ui', fontWeight: 'bold' },
-    heavy: { fontFamily: 'system-ui', fontWeight: '900' },
-  },
 };
 const DARK_THEME: Theme = {
-  dark: true,
+  ...DefaultTheme,
   colors: NAV_THEME.dark,
-  fonts: {
-    regular: { fontFamily: 'system-ui', fontWeight: 'normal' },
-    medium: { fontFamily: 'system-ui', fontWeight: '500' },
-    bold: { fontFamily: 'system-ui', fontWeight: 'bold' },
-    heavy: { fontFamily: 'system-ui', fontWeight: '900' },
-  },
 };
 
 export { ErrorBoundary } from 'expo-router';
@@ -42,9 +29,9 @@ export default function RootLayout() {
 
   React.useEffect(() => {
     (async () => {
-      await Font.loadAsync({
-        Inter: require('@/assets/fonts/Inter.ttf'),
-      });
+      // await Font.loadAsync({
+      //   Inter: require('@/assets/fonts/Inter.ttf'),
+      // });
 
       const theme = await AsyncStorage.getItem('theme');
       if (Platform.OS === 'web') {
@@ -60,6 +47,7 @@ export default function RootLayout() {
         setColorScheme(colorTheme);
 
         setIsColorSchemeLoaded(true);
+        setFontsLoaded(true);
         return;
       }
       setFontsLoaded(true);
