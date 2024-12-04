@@ -1,15 +1,27 @@
 import { Stack } from 'expo-router';
 import '../global.css';
+import { useUserStore } from '@/store';
 
 export default function RootLayout() {
+  const { user } = useUserStore((state) => state);
+
   return (
     <Stack>
-      <Stack.Screen
-        name="index"
-        options={{
-          headerTitle: 'Home',
-        }}
-      />
+      {user ? (
+        <Stack.Screen
+          name="(app)/index"
+          options={{
+            headerTitle: 'Home',
+          }}
+        />
+      ) : (
+        <Stack.Screen
+          name="(public)/index"
+          options={{
+            headerShown: false,
+          }}
+        />
+      )}
     </Stack>
   );
 }
