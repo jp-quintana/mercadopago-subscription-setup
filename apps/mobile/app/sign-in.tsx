@@ -1,6 +1,6 @@
 import { Text, View } from 'react-native';
 
-export default function Index() {
+export default function SignIn() {
   return (
     <View
       style={{
@@ -9,7 +9,7 @@ export default function Index() {
         alignItems: 'center',
       }}
     >
-      <Text className="text-blue-500">This is public</Text>
+      <Text className="text-blue-500">This is sign in</Text>
     </View>
   );
 }
