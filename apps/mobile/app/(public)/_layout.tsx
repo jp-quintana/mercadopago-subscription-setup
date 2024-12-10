@@ -7,8 +7,8 @@ export default function PublicLayout() {
   if (user) return <Redirect href="/home" />;
 
   return (
-    <Stack>
-      <Stack.Screen name="sign-in" options={{ headerShown: true }} />
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="sign-in" />
     </Stack>
   );
 }
