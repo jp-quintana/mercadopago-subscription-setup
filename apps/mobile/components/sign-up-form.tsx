@@ -1,13 +1,41 @@
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { Input } from './ui/input';
 import { Button, Text } from './ui';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { SignUpSchema } from '@/lib/schemas';
+import { z } from 'zod';
 
 export const SignUpForm = () => {
-  const { control, handleSubmit } = useForm();
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<z.infer<typeof SignUpSchema>>({
+    resolver: zodResolver(SignUpSchema),
+  });
 
-  const onSubmit = (data: any) => {
+  const username = watch('username') || '';
+  const password = watch('password') || '';
+  const confirmPassword = watch('confirmPassword') || '';
+
+  const inputsAreNotEmpty =
+    username.trim().length > 0 &&
+    password.trim().length > 0 &&
+    confirmPassword.trim().length > 0;
+
+  const onSubmit = (data: z.infer<typeof SignUpSchema>) => {
     console.log(data);
+  };
+
+  const onErrors = () => {
+    if (Object.keys(errors).length) {
+      const errorMessages = Object.values(errors)
+        .map((error) => error.message)
+        .join('\n');
+      Alert.alert('Error', errorMessages);
+    }
   };
 
   return (
@@ -56,7 +84,11 @@ export const SignUpForm = () => {
         rules={{ required: true }}
         defaultValue=""
       />
-      <Button onPress={handleSubmit(onSubmit)}>
+      <Button
+        onPress={handleSubmit(onSubmit, onErrors)}
+        disabled={!inputsAreNotEmpty}
+        className="mt-6"
+      >
         <Text>Crear</Text>
       </Button>
     </View>
