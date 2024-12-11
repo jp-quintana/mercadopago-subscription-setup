@@ -4,11 +4,25 @@ import { Input } from './ui/input';
 import { Button, buttonVariants, Text } from './ui';
 import { Link } from 'expo-router';
 import { cn } from '@/lib';
+import { SignInSchema } from '@/lib/schemas';
+import { z } from 'zod';
+
+import { zodResolver } from '@hookform/resolvers/zod';
 
 export const SignInForm = () => {
-  const { control, handleSubmit } = useForm();
+  const { control, watch, handleSubmit } = useForm<
+    z.infer<typeof SignInSchema>
+  >({
+    resolver: zodResolver(SignInSchema),
+  });
 
-  const onSubmit = (data: any) => {
+  const username = watch('username') || '';
+  const password = watch('password') || '';
+
+  const inputsAreNotEmpty =
+    username.trim().length > 0 && password.trim().length > 0;
+
+  const onSubmit = (data: z.infer<typeof SignInSchema>) => {
     console.log(data);
   };
 
@@ -17,12 +31,14 @@ export const SignInForm = () => {
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
-          <Input
-            onBlur={onBlur}
-            onChangeText={onChange}
-            value={value}
-            placeholder="Username"
-          />
+          <>
+            <Input
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+              placeholder="Username"
+            />
+          </>
         )}
         name="username"
         rules={{ required: true }}
@@ -52,7 +68,7 @@ export const SignInForm = () => {
       >
         Recuperar Contraseña
       </Link>
-      <Button onPress={handleSubmit(onSubmit)}>
+      <Button onPress={handleSubmit(onSubmit)} disabled={!inputsAreNotEmpty}>
         <Text>Ingresar</Text>
       </Button>
     </View>
