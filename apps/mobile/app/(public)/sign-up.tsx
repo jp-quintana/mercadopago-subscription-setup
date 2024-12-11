@@ -1,5 +1,5 @@
 import { AuthCard } from '@/components';
 
-export default function SignIn() {
+export default function SignUp() {
   return <AuthCard />;
 }
