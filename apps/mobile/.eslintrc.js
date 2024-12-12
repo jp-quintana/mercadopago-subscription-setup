@@ -1,5 +1,12 @@
 // https://docs.expo.dev/guides/using-eslint/
 module.exports = {
-  extends: ['expo', 'plugin:@tanstack/eslint-plugin-query/recommended'],
+  plugins: ['@typescript-eslint/eslint-plugin'],
+  extends: [
+    'expo',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:prettier/recommended',
+    'plugin:@tanstack/eslint-plugin-query/recommended',
+  ],
   ignorePatterns: ['/dist/*'],
 };
+s;
