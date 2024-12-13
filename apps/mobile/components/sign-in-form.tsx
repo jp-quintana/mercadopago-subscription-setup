@@ -4,7 +4,7 @@ import { Input } from './ui/input';
 import { Button, buttonVariants, Text } from './ui';
 import { Link } from 'expo-router';
 import { cn } from '@/lib';
-import { SignInSchema } from '@/lib/schemas';
+import { SignInSchema } from '@/lib';
 import { z } from 'zod';
 
 import { zodResolver } from '@hookform/resolvers/zod';

@@ -3,7 +3,7 @@ import { useForm, Controller } from 'react-hook-form';
 import { Input } from './ui/input';
 import { Button, Text } from './ui';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SignUpSchema } from '@/lib/schemas';
+import { SignUpSchema } from '@/lib';
 import { z } from 'zod';
 
 export const SignUpForm = () => {
