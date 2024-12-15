@@ -19,12 +19,6 @@ type UserState = {
 };
 
 export const useUserStore = create<UserState>((set) => ({
-  // user: {
-  //   name: 'User',
-  //   lastName: 'User',
-  //   email: 'user@gmail.com',
-  //   role: UserRole.USER,
-  // },
   user: null,
   setUser: (user) => set({ user }),
 }));
