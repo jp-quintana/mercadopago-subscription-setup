@@ -33,11 +33,14 @@ export class UserService {
     if (users.find((user) => user.username === createUserDto.username))
       throw new ConflictException('User already exists');
 
-    const newUser = { ...createUserDto, isPremium: false, id: uuid() };
+    let newUser = { ...createUserDto, isPremium: false, id: uuid() };
 
     users.push(newUser);
 
     await this.writeUsers(users);
+
+    delete newUser.password;
+    delete newUser.confirmPassword;
 
     return { user: newUser };
   }

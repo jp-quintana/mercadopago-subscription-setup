@@ -10,6 +10,7 @@ import { NAV_THEME } from '@/lib';
 import { useColorScheme } from '@/hooks';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -70,6 +71,7 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <StatusBar style={isDarkColorScheme ? 'light' : 'dark'} />
         <Slot />
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </ThemeProvider>
   );

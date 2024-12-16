@@ -5,8 +5,13 @@ import { Button, Text } from './ui';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SignUpSchema } from '@/lib';
 import { z } from 'zod';
+import { apiClient } from '@/services';
+import { useUserStore } from '@/store';
 
 export const SignUpForm = () => {
+  const login = apiClient.login();
+  const { setUser } = useUserStore();
+
   const {
     control,
     handleSubmit,
@@ -25,8 +30,10 @@ export const SignUpForm = () => {
     password.trim().length > 0 &&
     confirmPassword.trim().length > 0;
 
-  const onSubmit = (data: z.infer<typeof SignUpSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof SignUpSchema>) => {
+    const { data: d } = await login.mutateAsync(data);
+
+    setUser(d.user);
   };
 
   const onErrors = () => {

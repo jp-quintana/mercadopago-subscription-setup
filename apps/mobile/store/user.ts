@@ -1,16 +1,9 @@
 import { create } from 'zustand';
 
-const enum UserRole {
-  USER,
-  PREMIUM,
-  ADMIN,
-}
-
-interface User {
-  name: string;
-  lastName: string;
-  email: string;
-  role: UserRole;
+export interface User {
+  id: string;
+  username: string;
+  isPremium: boolean;
 }
 
 type UserState = {

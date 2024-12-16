@@ -1,7 +1,7 @@
-import axios from 'axios';
+import a from 'axios';
 // import { useAuthStore } from '@/store';
 
-const axiosInstance = axios.create({
+const axios = a.create({
   baseURL: 'http://localhost:3000/api',
   // withCredentials: true,
 });
@@ -13,4 +13,4 @@ const axiosInstance = axios.create({
 //   return config;
 // });
 
-export { axiosInstance };
+export { axios };
