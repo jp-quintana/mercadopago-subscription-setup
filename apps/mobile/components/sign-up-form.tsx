@@ -7,10 +7,12 @@ import { SignUpSchema } from '@/lib';
 import { z } from 'zod';
 import { apiClient } from '@/services';
 import { useUserStore } from '@/store';
+import { useRouter } from 'expo-router';
 
 export const SignUpForm = () => {
   const login = apiClient.login();
   const { setUser } = useUserStore();
+  const router = useRouter();
 
   const {
     control,
@@ -34,6 +36,7 @@ export const SignUpForm = () => {
     const { data: d } = await login.mutateAsync(data);
 
     setUser(d.user);
+    router.push('/home');
   };
 
   const onErrors = () => {
