@@ -1,13 +1,10 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-// interface UserRole {
-// }
-
 export interface User {
   id: string;
   username: string;
-  role: boolean;
+  isPremium: boolean;
 }
 
 type UserState = {
