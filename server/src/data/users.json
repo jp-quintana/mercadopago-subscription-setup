@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "username": "jpquintana",
+    "password": "P@ssword123",
+    "confirmPassword": "P@ssword123",
+    "isPremium": false,
+    "id": "f511aa0e-d7fd-4d17-bd99-caf338a23526"
+  }
+]
