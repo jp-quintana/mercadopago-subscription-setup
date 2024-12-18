@@ -2,10 +2,13 @@ import {
   ConflictException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dtos';
 import * as fs from 'fs/promises';
 import { v4 as uuid } from 'uuid';
+import { LoginDto } from './dtos/login.dto';
+import { UserRole } from './interfaces/user.interface';
 
 const filePath = 'src/data/users.json';
 
@@ -33,13 +36,29 @@ export class UserService {
     if (users.find((user) => user.username === createUserDto.username))
       throw new ConflictException('User already exists');
 
-    const newUser = { ...createUserDto, isPremium: false, id: uuid() };
+    let newUser = { ...createUserDto, role: UserRole.USER, id: uuid() };
 
     users.push(newUser);
 
     await this.writeUsers(users);
 
+    delete newUser.password;
+    delete newUser.confirmPassword;
+
     return { user: newUser };
+  }
+
+  async login(loginDto: LoginDto) {
+    const users = await this.readUsers();
+
+    const user = users.find((user) => user.username === loginDto.username);
+
+    if (!user) throw new NotFoundException('User not found');
+
+    if (user.password !== loginDto.password)
+      throw new UnauthorizedException('Invalid credentials');
+
+    return { user };
   }
 
   async findAll() {
@@ -51,6 +70,16 @@ export class UserService {
     const users = await this.readUsers();
 
     const user = users.find((user) => user.id === id);
+
+    if (!user) throw new NotFoundException('User not found');
+
+    return { user };
+  }
+
+  async findOneByUsername(username: string) {
+    const users = await this.readUsers();
+
+    const user = users.find((user) => user.username === username);
 
     if (!user) throw new NotFoundException('User not found');
 

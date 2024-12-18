@@ -9,6 +9,9 @@ import { Platform } from 'react-native';
 import { NAV_THEME } from '@/lib';
 import { useColorScheme } from '@/hooks';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
   colors: NAV_THEME.light,
@@ -17,6 +20,8 @@ const DARK_THEME: Theme = {
   ...DefaultTheme,
   colors: NAV_THEME.dark,
 };
+
+const queryClient = new QueryClient();
 
 export { ErrorBoundary } from 'expo-router';
 
@@ -63,8 +68,11 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? 'light' : 'dark'} />
-      <Slot />
+      <QueryClientProvider client={queryClient}>
+        <StatusBar style={isDarkColorScheme ? 'light' : 'dark'} />
+        <Slot />
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }
