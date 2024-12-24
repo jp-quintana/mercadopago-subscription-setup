@@ -10,7 +10,7 @@ import { useUserStore } from '@/store';
 import { useRouter } from 'expo-router';
 
 export const SignUpForm = () => {
-  const login = apiClient.login();
+  const register = apiClient.register();
   const { setUser } = useUserStore();
   const router = useRouter();
 
@@ -33,7 +33,7 @@ export const SignUpForm = () => {
     confirmPassword.trim().length > 0;
 
   const onSubmit = async (data: z.infer<typeof SignUpSchema>) => {
-    const { data: d } = await login.mutateAsync(data);
+    const { data: d } = await register.mutateAsync(data);
 
     setUser(d.user);
     router.push('/home');

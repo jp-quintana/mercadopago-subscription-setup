@@ -14,10 +14,10 @@ interface RegisterResponse {
 export class ApiClient {
   private readonly userEndPoint = 'user';
 
-  login() {
+  register() {
     return useMutation({
       mutationFn: (userDto: UserDto) =>
-        axios.post<RegisterResponse>(this.userEndPoint, userDto),
+        axios.post<RegisterResponse>(this.userEndPoint + '/register', userDto),
       onError: (error: Error) => console.log(error),
     });
   }
