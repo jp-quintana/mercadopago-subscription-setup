@@ -6,7 +6,7 @@ const axios = a.create({
   // withCredentials: true,
 });
 
-// axiosInstance.interceptors.request.use((config) => {
+// axios.interceptors.request.use((config) => {
 //   const token = useAuthStore.getState().token;
 //   config.headers['Authorization'] = `${token}`;
 

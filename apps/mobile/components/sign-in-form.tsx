@@ -1,29 +1,50 @@
-import { View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { Input } from './ui/input';
 import { Button, buttonVariants, Text } from './ui';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { cn } from '@/lib';
 import { SignInSchema } from '@/lib';
 import { z } from 'zod';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { apiClient } from '@/services';
+import { useUserStore } from '@/store';
 
 export const SignInForm = () => {
-  const { control, watch, handleSubmit } = useForm<
-    z.infer<typeof SignInSchema>
-  >({
+  const login = apiClient.login();
+  const { setUser } = useUserStore();
+  const router = useRouter();
+
+  const {
+    control,
+    watch,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<z.infer<typeof SignInSchema>>({
     resolver: zodResolver(SignInSchema),
   });
 
-  const username = watch('username') || '';
+  const email = watch('email') || '';
   const password = watch('password') || '';
 
   const inputsAreNotEmpty =
-    username.trim().length > 0 && password.trim().length > 0;
+    email.trim().length > 0 && password.trim().length > 0;
 
-  const onSubmit = (data: z.infer<typeof SignInSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof SignInSchema>) => {
+    const { data: d } = await login.mutateAsync(data);
+
+    setUser(d.user);
+    router.push('/home');
+  };
+
+  const onErrors = () => {
+    if (Object.keys(errors).length) {
+      const errorMessages = Object.values(errors)
+        .map((error) => error.message)
+        .join('\n');
+      Alert.alert('Error', errorMessages);
+    }
   };
 
   return (
@@ -36,11 +57,11 @@ export const SignInForm = () => {
               onBlur={onBlur}
               onChangeText={onChange}
               value={value}
-              placeholder="Username"
+              placeholder="Enter your email"
             />
           </>
         )}
-        name="username"
+        name="email"
         rules={{ required: true }}
         defaultValue=""
       />
@@ -68,7 +89,10 @@ export const SignInForm = () => {
       >
         Recuperar Contraseña
       </Link>
-      <Button onPress={handleSubmit(onSubmit)} disabled={!inputsAreNotEmpty}>
+      <Button
+        onPress={handleSubmit(onSubmit, onErrors)}
+        disabled={!inputsAreNotEmpty}
+      >
         <Text>Ingresar</Text>
       </Button>
     </View>

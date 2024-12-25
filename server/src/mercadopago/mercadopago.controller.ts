@@ -1,4 +1,4 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { MercadopagoService } from './mercadopago.service';
 import { SubscribeDto } from './dtos';
 
@@ -6,7 +6,7 @@ import { SubscribeDto } from './dtos';
 export class MercadopagoController {
   constructor(private readonly mercadoPagoService: MercadopagoService) {}
 
-  @Get('subscribe')
+  @Post('subscribe')
   subscribe(@Body() subscribeDto: SubscribeDto) {
     return this.mercadoPagoService.subscribe(subscribeDto.email);
   }

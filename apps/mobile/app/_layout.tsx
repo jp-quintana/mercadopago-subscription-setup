@@ -71,7 +71,7 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <StatusBar style={isDarkColorScheme ? 'light' : 'dark'} />
         <Slot />
-        <ReactQueryDevtools initialIsOpen={false} />
+        {Platform.OS === 'web' && <ReactQueryDevtools initialIsOpen={false} />}
       </QueryClientProvider>
     </ThemeProvider>
   );

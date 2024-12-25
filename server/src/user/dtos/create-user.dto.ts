@@ -1,9 +1,9 @@
-import { IsString, MinLength } from 'class-validator';
+import { IsEmail, IsString, MinLength } from 'class-validator';
 import { Match } from 'src/common/decoratos';
 
 export class CreateUserDto {
-  @IsString()
-  username: string;
+  @IsEmail()
+  email: string;
 
   @IsString()
   @MinLength(6)

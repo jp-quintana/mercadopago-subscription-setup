@@ -8,21 +8,26 @@ export class MercadopagoService {
   });
 
   async subscribe(email: string) {
-    const subscription = await new PreApproval(this.mercadopago).create({
-      body: {
-        back_url: process.env.APP_URL,
-        reason: 'Monthly subscription',
-        auto_recurring: {
-          frequency: 1,
-          frequency_type: 'months',
-          transaction_amount: 100,
-          currency_id: 'ARS',
+    console.log({ email });
+    try {
+      const subscription = await new PreApproval(this.mercadopago).create({
+        body: {
+          back_url: process.env.APP_URL,
+          reason: 'Monthly subscription',
+          auto_recurring: {
+            frequency: 1,
+            frequency_type: 'months',
+            transaction_amount: 100,
+            currency_id: 'ARS',
+          },
+          payer_email: email,
+          status: 'pending',
         },
-        payer_email: email,
-        status: 'pending',
-      },
-    });
+      });
 
-    return subscription.init_point!;
+      return subscription.init_point!;
+    } catch (error: any) {
+      console.error('error', error);
+    }
   }
 }

@@ -1,16 +1,25 @@
-import { Button } from '@/components';
+import { Button, Text } from '@/components';
+import { apiClient } from '@/services';
+import { User, useUserStore } from '@/store';
 import { View } from 'react-native';
+import * as Linking from 'expo-linking';
 
 export default function Home() {
+  const { user } = useUserStore((state) => state) as { user: User };
+  const subscribe = apiClient.subscribe();
+
+  const handleSubscribe = async () => {
+    const link = await subscribe.mutateAsync({ email: user.email });
+
+    await Linking.openURL(link);
+  };
+
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
-      <Button onPress={() => console.log('check')}>Subscribe</Button>
+    <View className="flex-1 items-center justify-center gap-3">
+      <Text>User role: {user.role}</Text>
+      <Button onPress={handleSubscribe}>
+        <Text>Subscribe</Text>
+      </Button>
     </View>
   );
 }

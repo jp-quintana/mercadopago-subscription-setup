@@ -33,10 +33,11 @@ export class UserService {
   async create(createUserDto: CreateUserDto) {
     const users = await this.readUsers();
 
-    if (users.find((user) => user.username === createUserDto.username))
+    if (users.find((user) => user.email === createUserDto.email))
       throw new ConflictException('User already exists');
 
     let newUser = { ...createUserDto, role: UserRole.USER, id: uuid() };
+    delete newUser.confirmPassword;
 
     users.push(newUser);
 
@@ -51,7 +52,7 @@ export class UserService {
   async login(loginDto: LoginDto) {
     const users = await this.readUsers();
 
-    const user = users.find((user) => user.username === loginDto.username);
+    const user = users.find((user) => user.email === loginDto.email);
 
     if (!user) throw new NotFoundException('User not found');
 
@@ -76,10 +77,10 @@ export class UserService {
     return { user };
   }
 
-  async findOneByUsername(username: string) {
+  async findOneByemail(email: string) {
     const users = await this.readUsers();
 
-    const user = users.find((user) => user.username === username);
+    const user = users.find((user) => user.email === email);
 
     if (!user) throw new NotFoundException('User not found');
 

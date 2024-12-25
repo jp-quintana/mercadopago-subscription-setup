@@ -2,27 +2,59 @@ import { axios } from '@/lib';
 import { User } from '@/store';
 import { useMutation } from '@tanstack/react-query';
 
-interface UserDto {
-  username: string;
+interface LoginUserDto {
+  email: string;
   password: string;
+}
+interface RegisterUserDto extends LoginUserDto {
   confirmPassword: string;
 }
 
-interface RegisterResponse {
+interface SubscribeUserDto {
+  email: string;
+}
+
+interface UserResponse {
   user: User;
 }
+
 export class ApiClient {
   private readonly userEndPoint = 'user';
+  private readonly mpEndPoint = 'mercadopago';
 
-  register() {
+  login() {
     return useMutation({
-      mutationFn: (userDto: UserDto) =>
-        axios.post<RegisterResponse>(this.userEndPoint + '/register', userDto),
+      mutationFn: (loginUserDto: LoginUserDto) =>
+        axios.post<UserResponse>(this.userEndPoint + '/login', loginUserDto),
       onError: (error: Error) => console.log(error),
     });
   }
 
-  login() {}
+  register() {
+    return useMutation({
+      mutationFn: (registerUserDto: RegisterUserDto) =>
+        axios.post<UserResponse>(
+          this.userEndPoint + '/register',
+          registerUserDto
+        ),
+      onError: (error: Error) => console.log(error),
+    });
+  }
+
+  subscribe() {
+    return useMutation({
+      mutationFn: async (subscribeUserDto: SubscribeUserDto) => {
+        console.log(subscribeUserDto);
+        const response = await axios.post<string>(
+          this.mpEndPoint + '/subscribe',
+          { email: process.env.EXPO_PUBLIC_MP_TEST_USER }
+        );
+        console.log(response.data);
+        return response.data;
+      },
+      onError: (error: Error) => console.error('Error subscribing:', error),
+    });
+  }
 }
 
 export const apiClient = new ApiClient();
