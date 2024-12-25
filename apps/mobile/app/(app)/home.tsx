@@ -1,4 +1,5 @@
-import { Text, View } from 'react-native';
+import { Button } from '@/components';
+import { View } from 'react-native';
 
 export default function Home() {
   return (
@@ -9,7 +10,7 @@ export default function Home() {
         alignItems: 'center',
       }}
     >
-      <Text className="text-red-500">This is app</Text>
+      <Button onPress={() => console.log('check')}>Subscribe</Button>
     </View>
   );
 }

@@ -21,6 +21,8 @@ export class ApiClient {
       onError: (error: Error) => console.log(error),
     });
   }
+
+  login() {}
 }
 
 export const apiClient = new ApiClient();
