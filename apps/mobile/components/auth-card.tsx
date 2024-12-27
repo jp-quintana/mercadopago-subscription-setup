@@ -31,7 +31,7 @@ export const AuthCard = () => {
             href={isSignIn ? '/sign-up' : '/sign-in'}
             className={cn(
               buttonVariants({ variant: 'link' }),
-              'text-blue-400 px-1.5 text-sm font-bold'
+              'text-blue-400 text-sm font-bold px-1.5 native:h-11 native:px-1.5'
             )}
           >
             {isSignIn ? 'Crear ahora' : 'Iniciar sesión'}

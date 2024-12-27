@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import MercadoPagoConfig, { PreApproval } from 'mercadopago';
+import { UserService } from 'src/user/user.service';
 
 @Injectable()
 export class MercadopagoService {
@@ -7,12 +8,23 @@ export class MercadopagoService {
     accessToken: process.env.MP_ACCESS_TOKEN,
   });
 
+  constructor(private readonly userService: UserService) {}
+
+  async webhook(data: any) {
+    const preapproval = await new PreApproval(this.mercadopago).get({
+      id: data.id,
+    });
+
+    if (preapproval.status === 'authorized') {
+      this.userService.confirmSubscription(preapproval.id);
+    }
+  }
+
   async subscribe(email: string) {
-    console.log({ email });
     try {
       const subscription = await new PreApproval(this.mercadopago).create({
         body: {
-          back_url: process.env.APP_URL,
+          back_url: 'https://mercadopago.com.ar',
           reason: 'Monthly subscription',
           auto_recurring: {
             frequency: 1,

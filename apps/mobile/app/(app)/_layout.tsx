@@ -1,7 +1,7 @@
 import { Redirect, Stack } from 'expo-router';
 import { useUserStore } from '@/store';
-import { LogOut } from 'lucide-react-native';
 import { Button } from '@/components';
+import { LogOut } from '@/lib/icons';
 
 export default function AppLayout() {
   const { user, setUser } = useUserStore((state) => state);
@@ -19,9 +19,9 @@ export default function AppLayout() {
               onPress={() => {
                 setUser(null);
               }}
-              className="w-8 h-8 p-0 flex items-center justify-center mr-4 bg-background text-foreground"
+              className="w-8 h-8 p-0 flex items-center justify-center web:mr-4 bg-background text-foreground"
             >
-              <LogOut />
+              <LogOut className="text-foreground" />
             </Button>
           ),
         }}

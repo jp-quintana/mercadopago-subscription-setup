@@ -100,4 +100,8 @@ export class UserService {
 
     return { message: 'User deleted successfully' };
   }
+
+  async confirmSubscription(subscriptionId: string) {
+    const users = await this.readUsers();
+  }
 }
