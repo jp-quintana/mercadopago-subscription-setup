@@ -8,10 +8,10 @@ export class MercadopagoController {
   constructor(private readonly mercadoPagoService: MercadopagoService) {}
 
   @Post()
-  webhook(@Req() request: Request) {
-    console.log({ body: request.body });
-
-    if (request.body?.type === 'subscription_preapproval') {
+  async webhook(@Req() request: any) {
+    const body: { data: { id: string }; type: string } = await request.json();
+    console.log(body);
+    if (body?.type === 'subscription_preapproval') {
       this.mercadoPagoService.webhook(request.body.data);
     }
   }
