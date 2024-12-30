@@ -13,7 +13,7 @@ export interface User {
   role: UserRole;
 }
 
-type UserState = {
+export type UserState = {
   user: User | null;
   setUser: (user: User | null) => void;
 };

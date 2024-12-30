@@ -12,13 +12,15 @@ export class MercadopagoService {
   constructor(private readonly userService: UserService) {}
 
   async webhook(data: any) {
-    const preapproval = await new PreApproval(this.mercadopago).get({
+    const subscription = await new PreApproval(this.mercadopago).get({
       id: data.id,
     });
 
-    if (preapproval.status === 'authorized') {
-      console.log(preapproval.id);
-      // this.userService.confirmSubscription(preapproval.id);
+    if (subscription.status === 'authorized') {
+      this.userService.confirmSubscription({
+        id: subscription.id,
+        status: subscription.status,
+      });
     }
   }
 
@@ -37,6 +39,11 @@ export class MercadopagoService {
           payer_email: subscribeDto.email,
           status: 'pending',
         },
+      });
+
+      await this.userService.startSubscription(subscribeDto.userId, {
+        id: subscription.id,
+        status: subscription.status,
       });
 
       return subscription.init_point!;

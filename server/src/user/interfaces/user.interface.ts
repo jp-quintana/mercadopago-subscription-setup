@@ -6,6 +6,7 @@ export const enum UserRole {
 
 export interface UserSubscription {
   id: string;
+  status: string;
 }
 
 export interface User {

@@ -5,5 +5,5 @@ export class SubscribeDto {
   email: string;
 
   @IsUUID()
-  id: string;
+  userId: string;
 }

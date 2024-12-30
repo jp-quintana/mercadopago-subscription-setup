@@ -8,7 +8,7 @@ import { CreateUserDto } from './dtos';
 import * as fs from 'fs/promises';
 import { v4 as uuid } from 'uuid';
 import { LoginDto } from './dtos/login.dto';
-import { UserRole } from './interfaces/user.interface';
+import { UserRole, UserSubscription } from './interfaces/user.interface';
 
 const filePath = 'src/data/users.json';
 
@@ -115,7 +115,30 @@ export class UserService {
     return { message: 'User deleted successfully' };
   }
 
-  async confirmSubscription(subscriptionId: string) {
+  async startSubscription(userId: string, subscription: UserSubscription) {
     const users = await this.readUsers();
+
+    const userIndex = users.findIndex((user) => user.id === userId);
+
+    if (userIndex < 0) throw new NotFoundException('User not found');
+
+    users[userIndex].subscription = subscription;
+
+    await this.writeUsers(users);
+  }
+
+  async confirmSubscription(subscription: UserSubscription) {
+    const users = await this.readUsers();
+
+    const userIndex = users.findIndex(
+      (user) => user.subscription.id === subscription.id,
+    );
+
+    if (userIndex < 0) throw new NotFoundException('User not found');
+
+    users[userIndex].subscription = subscription;
+    users[userIndex].role = 'PREMIUM';
+
+    await this.writeUsers(users);
   }
 }

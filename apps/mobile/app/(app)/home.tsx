@@ -1,23 +1,43 @@
 import { Button, Text } from '@/components';
 import { apiClient } from '@/services';
 import { User, useUserStore } from '@/store';
-import { Platform, View } from 'react-native';
-import * as Linking from 'expo-linking';
+import { AppState, View } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export default function Home() {
-  const { user } = useUserStore((state) => state) as { user: User };
+  const { user, setUser } = useUserStore((state) => state) as {
+    user: User;
+    setUser: (user: User) => void;
+  };
+
   const subscribe = apiClient.subscribe();
+  const { refetch } = apiClient.getUser(user.id);
+
+  const appState = useRef(AppState.currentState);
+  const [_appStateVisible, setAppStateVisible] = useState(appState.current);
 
   useEffect(() => {
-    Linking.addEventListener('url', (event) => {
-      const { url } = event;
-      console.log({ url });
-      if (url !== null && url.includes('myapp://')) {
-        Platform.OS === 'ios' && WebBrowser.dismissBrowser();
+    const subscription = AppState.addEventListener('change', (nextAppState) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        (async () => {
+          const { data: u } = await refetch();
+          if (u) {
+            setUser(u);
+          }
+        })();
       }
+
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current);
     });
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   const handleSubscribe = async () => {

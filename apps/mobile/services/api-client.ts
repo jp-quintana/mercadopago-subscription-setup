@@ -1,6 +1,6 @@
 import { axios } from '@/lib';
 import { User } from '@/store';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 interface LoginUserDto {
   email: string;
@@ -11,7 +11,7 @@ interface RegisterUserDto extends LoginUserDto {
 }
 
 interface SubscribeUserDto {
-  id: string;
+  userId: string;
   email: string;
 }
 
@@ -49,13 +49,24 @@ export class ApiClient {
           this.mpEndPoint + '/subscribe',
           {
             email: process.env.EXPO_PUBLIC_MP_TEST_USER,
-            userId: subscribeUserDto.id,
+            userId: subscribeUserDto.userId,
           }
         );
-        console.log(response.data);
         return response.data;
       },
       onError: (error: Error) => console.error('Error subscribing:', error),
+    });
+  }
+
+  getUser(userId: string) {
+    return useQuery({
+      queryKey: ['getUser', userId],
+      queryFn: async () => {
+        const response = await axios.get<UserResponse>(
+          this.userEndPoint + `/${userId}`
+        );
+        return response.data.user;
+      },
     });
   }
 }
