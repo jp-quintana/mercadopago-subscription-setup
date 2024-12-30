@@ -9,11 +9,11 @@ export const enum UserRole {
 
 export interface User {
   id: string;
-  username: string;
+  email: string;
   role: UserRole;
 }
 
-type UserState = {
+export type UserState = {
   user: User | null;
   setUser: (user: User | null) => void;
 };

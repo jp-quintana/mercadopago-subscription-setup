@@ -10,7 +10,7 @@ import { useUserStore } from '@/store';
 import { useRouter } from 'expo-router';
 
 export const SignUpForm = () => {
-  const login = apiClient.login();
+  const register = apiClient.register();
   const { setUser } = useUserStore();
   const router = useRouter();
 
@@ -23,17 +23,17 @@ export const SignUpForm = () => {
     resolver: zodResolver(SignUpSchema),
   });
 
-  const username = watch('username') || '';
+  const email = watch('email') || '';
   const password = watch('password') || '';
   const confirmPassword = watch('confirmPassword') || '';
 
   const inputsAreNotEmpty =
-    username.trim().length > 0 &&
+    email.trim().length > 0 &&
     password.trim().length > 0 &&
     confirmPassword.trim().length > 0;
 
   const onSubmit = async (data: z.infer<typeof SignUpSchema>) => {
-    const { data: d } = await login.mutateAsync(data);
+    const { data: d } = await register.mutateAsync(data);
 
     setUser(d.user);
     router.push('/home');
@@ -57,10 +57,10 @@ export const SignUpForm = () => {
             onBlur={onBlur}
             onChangeText={onChange}
             value={value}
-            placeholder="Username"
+            placeholder="Enter your email"
           />
         )}
-        name="username"
+        name="email"
         rules={{ required: true }}
         defaultValue=""
       />

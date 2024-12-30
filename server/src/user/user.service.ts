@@ -8,7 +8,7 @@ import { CreateUserDto } from './dtos';
 import * as fs from 'fs/promises';
 import { v4 as uuid } from 'uuid';
 import { LoginDto } from './dtos/login.dto';
-import { UserRole } from './interfaces/user.interface';
+import { UserRole, UserSubscription } from './interfaces/user.interface';
 
 const filePath = 'src/data/users.json';
 
@@ -33,10 +33,16 @@ export class UserService {
   async create(createUserDto: CreateUserDto) {
     const users = await this.readUsers();
 
-    if (users.find((user) => user.username === createUserDto.username))
+    if (users.find((user) => user.email === createUserDto.email))
       throw new ConflictException('User already exists');
 
-    let newUser = { ...createUserDto, role: UserRole.USER, id: uuid() };
+    let newUser = {
+      ...createUserDto,
+      role: UserRole.USER,
+      id: uuid(),
+      subscription: null,
+    };
+    delete newUser.confirmPassword;
 
     users.push(newUser);
 
@@ -44,6 +50,7 @@ export class UserService {
 
     delete newUser.password;
     delete newUser.confirmPassword;
+    delete newUser.subscription;
 
     return { user: newUser };
   }
@@ -51,12 +58,16 @@ export class UserService {
   async login(loginDto: LoginDto) {
     const users = await this.readUsers();
 
-    const user = users.find((user) => user.username === loginDto.username);
+    const user = users.find((user) => user.email === loginDto.email);
 
     if (!user) throw new NotFoundException('User not found');
 
     if (user.password !== loginDto.password)
       throw new UnauthorizedException('Invalid credentials');
+
+    delete user.password;
+    delete user.confirmPassword;
+    delete user.subscription;
 
     return { user };
   }
@@ -73,13 +84,17 @@ export class UserService {
 
     if (!user) throw new NotFoundException('User not found');
 
+    delete user.password;
+    delete user.confirmPassword;
+    delete user.subscription;
+
     return { user };
   }
 
-  async findOneByUsername(username: string) {
+  async findOneByEmail(email: string) {
     const users = await this.readUsers();
 
-    const user = users.find((user) => user.username === username);
+    const user = users.find((user) => user.email === email);
 
     if (!user) throw new NotFoundException('User not found');
 
@@ -98,5 +113,32 @@ export class UserService {
     await this.writeUsers(updatedUsers);
 
     return { message: 'User deleted successfully' };
+  }
+
+  async startSubscription(userId: string, subscription: UserSubscription) {
+    const users = await this.readUsers();
+
+    const userIndex = users.findIndex((user) => user.id === userId);
+
+    if (userIndex < 0) throw new NotFoundException('User not found');
+
+    users[userIndex].subscription = subscription;
+
+    await this.writeUsers(users);
+  }
+
+  async confirmSubscription(subscription: UserSubscription) {
+    const users = await this.readUsers();
+
+    const userIndex = users.findIndex(
+      (user) => user.subscription.id === subscription.id,
+    );
+
+    if (userIndex < 0) throw new NotFoundException('User not found');
+
+    users[userIndex].subscription = subscription;
+    users[userIndex].role = 'PREMIUM';
+
+    await this.writeUsers(users);
   }
 }
