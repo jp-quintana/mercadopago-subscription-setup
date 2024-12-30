@@ -21,7 +21,10 @@ export default function Home() {
   }, []);
 
   const handleSubscribe = async () => {
-    const link = await subscribe.mutateAsync({ email: user.email });
+    const link = await subscribe.mutateAsync({
+      email: user.email,
+      userId: user.id,
+    });
 
     await WebBrowser.openBrowserAsync(link);
   };

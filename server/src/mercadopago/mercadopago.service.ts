@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import MercadoPagoConfig, { PreApproval } from 'mercadopago';
 import { UserService } from 'src/user/user.service';
+import { SubscribeDto } from './dtos';
 
 @Injectable()
 export class MercadopagoService {
@@ -16,11 +17,12 @@ export class MercadopagoService {
     });
 
     if (preapproval.status === 'authorized') {
-      this.userService.confirmSubscription(preapproval.id);
+      console.log(preapproval.id);
+      // this.userService.confirmSubscription(preapproval.id);
     }
   }
 
-  async subscribe(email: string) {
+  async subscribe(subscribeDto: SubscribeDto) {
     try {
       const subscription = await new PreApproval(this.mercadopago).create({
         body: {
@@ -32,7 +34,7 @@ export class MercadopagoService {
             transaction_amount: 100,
             currency_id: 'ARS',
           },
-          payer_email: email,
+          payer_email: subscribeDto.email,
           status: 'pending',
         },
       });

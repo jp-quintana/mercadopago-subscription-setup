@@ -11,6 +11,7 @@ interface RegisterUserDto extends LoginUserDto {
 }
 
 interface SubscribeUserDto {
+  id: string;
   email: string;
 }
 
@@ -44,10 +45,12 @@ export class ApiClient {
   subscribe() {
     return useMutation({
       mutationFn: async (subscribeUserDto: SubscribeUserDto) => {
-        console.log(subscribeUserDto);
         const response = await axios.post<string>(
           this.mpEndPoint + '/subscribe',
-          { email: process.env.EXPO_PUBLIC_MP_TEST_USER }
+          {
+            email: process.env.EXPO_PUBLIC_MP_TEST_USER,
+            userId: subscribeUserDto.id,
+          }
         );
         console.log(response.data);
         return response.data;

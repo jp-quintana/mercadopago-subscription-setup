@@ -4,8 +4,13 @@ export const enum UserRole {
   PREMIUM = 'PREMIUM',
 }
 
+export interface UserSubscription {
+  id: string;
+}
+
 export interface User {
   id: string;
   email: string;
   role: UserRole;
+  subscription: UserSubscription | null;
 }

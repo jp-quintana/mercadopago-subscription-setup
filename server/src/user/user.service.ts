@@ -36,7 +36,12 @@ export class UserService {
     if (users.find((user) => user.email === createUserDto.email))
       throw new ConflictException('User already exists');
 
-    let newUser = { ...createUserDto, role: UserRole.USER, id: uuid() };
+    let newUser = {
+      ...createUserDto,
+      role: UserRole.USER,
+      id: uuid(),
+      subscription: null,
+    };
     delete newUser.confirmPassword;
 
     users.push(newUser);
@@ -45,6 +50,7 @@ export class UserService {
 
     delete newUser.password;
     delete newUser.confirmPassword;
+    delete newUser.subscription;
 
     return { user: newUser };
   }
@@ -58,6 +64,10 @@ export class UserService {
 
     if (user.password !== loginDto.password)
       throw new UnauthorizedException('Invalid credentials');
+
+    delete user.password;
+    delete user.confirmPassword;
+    delete user.subscription;
 
     return { user };
   }
@@ -74,10 +84,14 @@ export class UserService {
 
     if (!user) throw new NotFoundException('User not found');
 
+    delete user.password;
+    delete user.confirmPassword;
+    delete user.subscription;
+
     return { user };
   }
 
-  async findOneByemail(email: string) {
+  async findOneByEmail(email: string) {
     const users = await this.readUsers();
 
     const user = users.find((user) => user.email === email);
